@@ -29,10 +29,11 @@ export default function useCategory() {
             if (e.response.status === 422) {
                 errors.value = e.response.data.errors
             }
+            console.log(errors.value)
         }
     }
 
-    const updateCategory = async (id: number) => {
+    const updateCategory = async (id: string) => {
         errors.value = ''
         try {
             await axios.put('/api/categories/' + id, category.value)
@@ -44,7 +45,7 @@ export default function useCategory() {
         }
     }
 
-    const removeCategory = async (id: number) => {
+    const removeCategory = async (id: string) => {
         await axios.delete('/api/categories/' + id);
         await router.push({name: 'categories.index'});
     }

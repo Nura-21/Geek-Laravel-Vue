@@ -7,65 +7,82 @@ use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Repositories\CategoryRepository;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
+    private CategoryRepository $categoryRepository;
+
+    /**
+     * CategoryController constructor.
+     *
+     * @param CategoryRepository $categoryRepository
+     */
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
     public function index()
     {
-        return CategoryResource::collection(Category::all());
+        return CategoryResource::collection($this->categoryRepository->getAll());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CategoryRequest $request
+     * @return CategoryResource
      */
     public function store(CategoryRequest $request)
     {
-        $category = Category::create($request->validated());
-        return new CategoryResource($category);
+        return new CategoryResource($this->categoryRepository->create($request->validated()));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return CategoryResource
      */
     public function show(Category $category)
     {
-        return new  CategoryResource($category);
+        return new CategoryResource($this->categoryRepository->getById($category->id));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param CategoryRequest $request
+     * @param Category $category
+     * @return CategoryResource
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, Category $category): CategoryResource
     {
-        $category->update($request->validated());
+        $this->categoryRepository->update($category->id, $request->validated());
+        return new CategoryResource($this->categoryRepository->getById($category->id));
 
-        return new CategoryResource($category);
+        // Если пишу как ниже он у меня выдает 500 ошибку, изменения проходят но ошибка выдается
+        // return new CategoryResource($this->categoryRepository->update($category->id, $request->validated()));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return Response
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        $this->categoryRepository->delete($category->id);
 
         return response()->noContent();
     }

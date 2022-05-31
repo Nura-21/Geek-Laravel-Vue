@@ -9,5 +9,7 @@ class Category extends Model
 {
     use HasFactory;
     use \App\Traits\TraitUuid;
+
     protected $fillable = ['code' , 'icon', 'name'];
+
 }

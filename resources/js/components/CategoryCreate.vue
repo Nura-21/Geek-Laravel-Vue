@@ -17,7 +17,6 @@
                 <button :disabled="!submittable" type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
-        {{errors}}
     </div>
 </template>
 

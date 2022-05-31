@@ -35,7 +35,7 @@ export default {
         onMounted(() => getCategory(props.id))
 
         const deleteCategory = async ( category: any ) => {
-            if (!window.confirm(`delete  ${category.title}?`)) {
+            if (!window.confirm(`delete  ${category.name}?`)) {
                 return
             }
             await removeCategory(props.id);

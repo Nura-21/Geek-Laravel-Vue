@@ -73,13 +73,4 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return $this->model->find($id)->delete();
     }
-
-    /**
-     * Get length
-     * @return int
-     */
-    public function length(): int
-    {
-        return count($this->model->all());
-    }
 }

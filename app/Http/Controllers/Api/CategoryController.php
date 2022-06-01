@@ -32,8 +32,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return response()->json(array('categories' => $this->categoryRepository->getAll(), 'length'=> $this->categoryRepository->length()));
-//        return response()->json($this->categoryRepository->getAll());
+        return response()->json($this->categoryRepository->getAll());
     }
 
     /**

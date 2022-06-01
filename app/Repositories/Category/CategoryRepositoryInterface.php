@@ -10,11 +10,6 @@ interface CategoryRepositoryInterface
      */
     public function getAll(): mixed;
     /**
-     * Get length
-     * @return int
-     */
-    public function length(): int;
-    /**
      * Get item by id
      *
      * @param string $id

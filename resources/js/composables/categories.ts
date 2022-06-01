@@ -16,10 +16,10 @@ export default function useCategory() {
 
     const getCategories = async (currentPage: number = 1) => {
         const response = await axios.get(`/api/categories?page=${currentPage}`);
-        lastPage.value = response.data.categories.last_page;
-        categories.value = response.data.categories.data;
-        perPage.value = response.data.categories.per_page;
-        categoriesLength.value = response.data.length;
+        lastPage.value = response.data.last_page;
+        categories.value = response.data.data;
+        perPage.value = response.data.per_page;
+        categoriesLength.value = response.data.total;
     }
 
     const getCategory = async (id: string) => {

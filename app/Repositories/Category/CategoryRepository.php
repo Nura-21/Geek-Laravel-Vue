@@ -26,7 +26,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function getAll(): mixed
     {
-        return $this->model->orderBy('code')->paginate(6);
+        return $this->model->orderBy('code')->paginate($perPage = 6);
     }
 
     /**

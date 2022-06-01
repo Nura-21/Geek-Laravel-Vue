@@ -15,7 +15,7 @@ export default function useCategory() {
     const router = useRouter();
 
     const getCategories = async (currentPage: number = 1) => {
-        const response = await axios.get(`/api/categories?page=${currentPage}`);
+        const response = await axios.get(`/api/categories?page=${currentPage}`, );
         lastPage.value = response.data.last_page;
         categories.value = response.data.data;
         perPage.value = response.data.per_page;

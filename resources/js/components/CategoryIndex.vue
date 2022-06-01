@@ -20,21 +20,48 @@
                 <h3 class="text-muted">No categories</h3>
             </div>
         </div>
+        <div class="categories-pagination d-flex justify-content-center">
+            <b-pagination
+                v-model="currentPageModel"
+                :total-rows="categoriesLength"
+                :per-page="perPage"
+                prev-text="Prev"
+                next-text="Next"
+            />
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import {computed, onMounted} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import useCategory from "../composables/categories";
+import{ BPagination } from "bootstrap-vue-3";
 
 export default {
+    components: { BPagination },
+    directives: { 'b-pagination': BPagination },
     setup() {
-        const {categories, getCategories} = useCategory()
-        onMounted(() => getCategories())
+        let currentPage = ref(1);
+        const {categories, getCategories, categoriesLength, perPage } = useCategory()
+        onMounted(() => getCategories(currentPage.value))
+
+        const currentPageModel = computed({
+            get(): number{
+                return currentPage.value;
+            },
+            set(value: number): void{
+                currentPage.value = value;
+                getCategories(currentPage.value);
+            }
+        })
 
         return {
             categories,
-            isNotEmpty: computed(() => Boolean(Object.keys(categories.value).length))
+            isNotEmpty: computed(() => Boolean(Object.keys(categories.value).length)),
+            currentPage,
+            categoriesLength,
+            currentPageModel,
+            perPage
         }
     }
 };

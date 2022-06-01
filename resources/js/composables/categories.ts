@@ -5,19 +5,26 @@ import { useRouter } from 'vue-router';
 export default function useCategory() {
     const categories = ref([])
     const category = ref([])
+    const categoriesLength = ref(0)
+    const perPage = ref(0);
+
+    const lastPage = ref(-1);
 
     const errors = ref('')
 
     const router = useRouter();
 
-    const getCategories = async () => {
-        const response = await axios.get('/api/categories');
-        categories.value = response.data.data;
+    const getCategories = async (currentPage: number = 1) => {
+        const response = await axios.get(`/api/categories?page=${currentPage}`);
+        lastPage.value = response.data.categories.last_page;
+        categories.value = response.data.categories.data;
+        perPage.value = response.data.categories.per_page;
+        categoriesLength.value = response.data.length;
     }
 
     const getCategory = async (id: string) => {
         let response = await axios.get('/api/categories/' + id)
-        category.value = response.data.data;
+        category.value = response.data;
     }
 
     const storeCategory = async (data: object) => {
@@ -27,7 +34,7 @@ export default function useCategory() {
             await router.push({name: 'categories.index'})
         } catch (e: any) {
             if (e.response.status === 422) {
-                errors.value = e.response.data.errors
+                errors.value = e.response.errors
             }
             console.log(errors.value)
         }
@@ -40,7 +47,7 @@ export default function useCategory() {
             await router.push({name: 'categories.index'})
         } catch (e: any) {
             if (e.response.status === 422) {
-                errors.value = e.response.data.errors
+                errors.value = e.response.errors
             }
         }
     }
@@ -58,6 +65,8 @@ export default function useCategory() {
         storeCategory,
         updateCategory,
         removeCategory,
-        errors
+        errors,
+        categoriesLength,
+        perPage,
     }
 }

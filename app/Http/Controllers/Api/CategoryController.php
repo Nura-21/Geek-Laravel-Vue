@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Repositories\CategoryRepository;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Repositories\Category\CategoryRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class CategoryController extends Controller
@@ -29,33 +28,34 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
     public function index()
     {
-        return CategoryResource::collection($this->categoryRepository->getAll());
+        return response()->json(array('categories' => $this->categoryRepository->getAll(), 'length'=> $this->categoryRepository->length()));
+//        return response()->json($this->categoryRepository->getAll());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param CategoryRequest $request
-     * @return CategoryResource
+     * @return JsonResponse
      */
     public function store(CategoryRequest $request)
     {
-        return new CategoryResource($this->categoryRepository->create($request->validated()));
+        return response()->json($this->categoryRepository->create($request->validated()));
     }
 
     /**
      * Display the specified resource.
      *
      * @param Category $category
-     * @return CategoryResource
+     * @return JsonResponse
      */
     public function show(Category $category)
     {
-        return new CategoryResource($this->categoryRepository->getById($category->id));
+        return response()->json($this->categoryRepository->getById($category->id));
     }
 
     /**
@@ -63,12 +63,12 @@ class CategoryController extends Controller
      *
      * @param CategoryRequest $request
      * @param Category $category
-     * @return CategoryResource
+     * @return JsonResponse
      */
-    public function update(CategoryRequest $request, Category $category): CategoryResource
+    public function update(CategoryRequest $request, Category $category): JsonResponse
     {
         $this->categoryRepository->update($category->id, $request->validated());
-        return new CategoryResource($this->categoryRepository->getById($category->id));
+        return response()->json($this->categoryRepository->getById($category->id));
 
         // Если пишу как ниже он у меня выдает 500 ошибку, изменения проходят но ошибка выдается
         // return new CategoryResource($this->categoryRepository->update($category->id, $request->validated()));
